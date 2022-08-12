@@ -6,11 +6,13 @@ const cheetBtn = document.querySelector(".cheet_btn");
 
 const tileCount = 16
 
-
-// functions
+/*
+ * functions
+ */
 
 // Load random 400*400 image and shuffle after 3 sec
 function setGame() {
+  playBoard.innerHTML = null;
   const tempArr = [];
   Array(tileCount).fill().forEach( (_, index) => {
     const li = document.createElement('li');
@@ -22,7 +24,6 @@ function setGame() {
   tempArr.forEach( (li) => {
     playBoard.appendChild(li);
   });
-  console.log(playBoard);
   const suffledArr = suffle(tempArr);
   setTimeout( () => {
     playBoard.innerHTML = null;
@@ -41,27 +42,43 @@ function suffle(arr) {
   return arr;
 }
 
+// function timer() {
+//   playTime.setTimeout( () => {
 
-// events
-// let draggingTile = {};
+//   }, 1000)
+// }
 
-// document.addEventListener('dragstart', (e) => {
-//   draggingTile['idx'] = [...e.target.parentNode.childNodes].indexOf(e.target);
-//   draggingTile['class'] = e.target.className;
-//   console.log(e)
-//   console.log(draggingTile);
-// });
-// document.addEventListener('dragover', (e) => {
-//   e.preventDefault();
-// });
-// document.addEventListener('drop', (e) => {
-//   console.log(e);
-//   // idxDropped = [...e.target.parentNode.childNodes].indexOf(e.target)
-//   // if (draggingTile.idx)
-//   e.target.before(draggingTile);
-// });
-// // startBtn.addEventListener('click', setGame());
 
-// body
+/*
+ * events
+ */
+
+let dragTileData = {};
+
+document.addEventListener('dragstart', (e) => {
+  dragTileData['idx'] = [...e.target.parentNode.children].indexOf(e.target);
+  dragTileData['class'] = e.target.className;
+  console.log(e);
+  console.log(dragTileData);
+});
+document.addEventListener('dragover', (e) => {
+  e.preventDefault();
+});
+document.addEventListener('drop', (e) => {
+  const ulArray = [...e.target.parentNode.children]
+  // console.log(e.target.getAttribute('idx'));
+  droppedTileIdx = ulArray.indexOf(e.target);
+  draggedTile = ulArray[dragTileData.idx];
+  
+  if (dragTileData.idx > droppedTileIdx) {
+    e.target.before(draggedTile);
+    // [ulArray[dragTileData.idx], ulArray[droppedTileIdx]] = [ulArray[droppedTileIdx], ulArray[dragTileData.idx]]
+  } else if (dragTileData.idx < droppedTileIdx) {
+    e.target.after(draggedTile);
+    // droppedTile을 출발한 위치로 이동
+  }
+  console.log(e);
+});
+startBtn.addEventListener('click', setGame);
 
 setGame();
